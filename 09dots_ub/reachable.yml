@@ -1,0 +1,22 @@
+- hosts: local
+  
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.11
+
+  tasks:
+
+    
+    - name: pull base container
+      docker_image:
+        name: python
+        source: pull
+
+    - name: run container as target hosts
+      shell: |
+        docker run -i --name pythonansible python
+        docker start pythonansible
+        docker exec -i pythonansible bash -c "mkdir /root/.config/nvim"
+
+        #- name: create dir on target hosts

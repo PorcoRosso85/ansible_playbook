@@ -1,0 +1,28 @@
+---
+- hosts: docker_dotstoubuntu
+  gather_facts: false
+
+  tasks:
+    - name: Make sure package requirements are met
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Make sure python requirements are met
+      pip:
+        name: cryptography
+        state: present
+
+    - name: Create private directory
+      file:
+        path: "{{ key_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0750
+
+    - name: Create a key
+      openssl_privatekey:
+        path: "{{ key_path }}/playkey.key"
+        size: "{{ key_size }}"
+        type: "{{ key_type }}"

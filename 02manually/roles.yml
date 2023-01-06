@@ -1,0 +1,4 @@
+- name: For local env
+  hosts: localhost
+  roles:
+    - shell

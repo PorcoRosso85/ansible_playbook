@@ -1,0 +1,11 @@
+---
+local:
+  vars:
+    ansible_connection: local
+  hosts:
+    localhost:
+docker:
+  vars:
+    ansible_connection: docker
+  hosts:
+    pythonansible:

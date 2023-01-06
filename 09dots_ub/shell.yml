@@ -1,0 +1,27 @@
+- hosts: docker
+  
+  gather_facts: false
+
+  tasks:
+
+    #- name: if we use appimage on ubuntu
+    #  shell: |
+    #    apt install software-properties-common -y
+    #    add-apt-repository universe
+    #    apt install libfuse2 -y
+
+    - name: install apps from script
+      shell: |
+        chmod +x "{{ item }}"
+        sh "{{ item }}"
+      loop: "{{ filepath['src_path'] }}"
+      vars:
+        filepath:
+          src_path:
+            - /root/.extension/nvim/nvim.sh
+              #- /root/.extension/curl.sh
+            - /root/.extension/fzf.sh
+              #- /root/.extension/rust.sh
+              #- /root/.extension/cmake.sh
+            - /root/.extension/dvm/dvm.sh
+            - /root/.extension/zsh/p10k.sh

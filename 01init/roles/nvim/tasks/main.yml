@@ -1,0 +1,21 @@
+- name: install neovim on linux
+  package:
+    name:
+      - neovim
+      - python3-pynvim
+    state: present
+  vars:
+      ansible_python_interpreter: /usr/bin/python3.11
+  become: yes
+
+- name: symlink init.vim
+  file:
+    src: "{{ ansible_env.PWD }}/roles/nvim/files/init.vim"
+    path: "~/.config/nvim/init.vim"
+    state: link
+
+- import_tasks: main_if_macos.yml
+  when: ansible_facts['os_family'] == "Darwin"
+- import_tasks: main.yml
+  when: ansible_facts['os_family'] == "ArchLinux"
+- import_tasks: config.yml

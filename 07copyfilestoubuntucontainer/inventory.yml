@@ -1,0 +1,6 @@
+---
+copyfilestoubuntu:
+  vars:
+    ansible_connection: docker
+  hosts:
+    ansibleubuntu:

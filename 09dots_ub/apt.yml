@@ -1,0 +1,15 @@
+- hosts: docker
+  
+  gather_facts: false
+
+  tasks:
+    
+    - name: update apt
+      shell: |
+        apt update
+
+    - name: install apps from apt package 
+      apt:
+        name:
+          - git
+          - fd-find

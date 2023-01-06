@@ -1,0 +1,6 @@
+---
+docker_dotstoubuntu:
+  vars:
+    ansible_connection: docker
+  hosts:
+    dotstoubuntu:

@@ -1,0 +1,15 @@
+---
+- hosts: test_servers
+  connection: docker
+  tasks:
+    - name: create directory
+      file:
+        path: /home/test/
+        state: directory
+        mode: 0755
+
+    - name: create file
+      file:
+        path: /home/test/test/txt
+        state: touch
+        mode: 0644

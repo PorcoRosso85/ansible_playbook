@@ -1,0 +1,8 @@
+- name: install neovim on darwin
+  homebrew:
+    name: neovim
+    state: present
+
+- name: install python-neovim on darwin
+  pip:
+    name: neovim

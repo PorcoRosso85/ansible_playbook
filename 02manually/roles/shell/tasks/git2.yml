@@ -1,0 +1,63 @@
+- name: check .dots file exists
+  become: yes
+  shell:
+    cmd: ls -l /root/.dots
+  register: sourcedir
+  ignore_errors: yes
+
+
+- name: check .ssh dir exists
+  become: yes
+  shell:
+    cmd: ls -l /root/.ssh
+  register: sshdir
+  ignore_errors: yes
+
+
+- name: create .ssh dir, for root
+  when: sshdir.rc != 0
+  become: yes
+  file:
+    path: /root/.ssh
+    state: directory
+    mode: '0700'
+    owner: root
+    group: root
+
+
+- name: create config access, for ssh, to git
+  when: sourcedir != 0
+  become: yes
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+    backup: yes
+  with_items:
+    - { src: config, dest: /root/.ssh/config, mode:'0644' }
+    - { src: gitid_rsa, dest: /root/.ssh/gitid_rsa, mode:'0600' }
+
+
+- name: git init
+  when: sourcedir != 0
+  become: yes
+  shell:
+    cmd: cd /root/ | git init
+
+
+- name: git clone
+  when: sourcedir != 0
+  git:
+    repo: git@github.com:PorcoRosso85/dots.git
+    dest: /root/.dots
+    accept_hostkey: true
+    key_file: /root/.ssh/gitid_rsa
+
+
+- name: chown recurse
+  when: sourcedir != 0
+  become: yes
+  shell:
+    cmd: chown root:root -R /root/.dots

@@ -1,0 +1,29 @@
+---
+- hosts: all
+  gather_facts: false
+
+  vars:
+    filepath:
+      src_path: 
+          - /root/.config
+          - /root/.extension
+      dest_path: /root/
+      mode: "0755"
+  tasks:
+    - name: ensure dotfiles existed on target hosts
+      copy:
+        src: "{{ item }}"
+        dest: "{{ filepath['dest_path'] }}"
+        owner: root
+        group: root
+        mode: "{{ filepath['mode'] }}"
+        backup: yes
+      loop: "{{ filepath['src_path'] }}"
+    - name: ensure dotfiles existed on target hosts
+      shell:
+        cmd: ls -l /root/.config
+
+          #- name: install apps from script
+          #- name: ensure required packages
+          #- name: install apps from package
+          #- name: ensure some apps able to run

@@ -1,0 +1,8 @@
+- name: install, with package, on linux
+  package:
+    name:
+      - git
+      - wget
+
+
+- name: install app of shell scrips on linux

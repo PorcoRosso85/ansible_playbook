@@ -1,0 +1,115 @@
+---
+- hosts: local
+
+  gather_facts: false
+
+  tasks:
+#    
+#    - name: pull base docker image
+#      docker_image:
+#        name: ubuntu
+#        source: pull
+#
+#    - name: ensure python installed on docker image
+#      community.docker.docker_container_exec:
+#        container: ubuntu
+#        command: /bin/bash -c "apt update -y && apt install python3 -y"
+    
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.11
+
+  tasks:
+    
+    #- name: pull base container
+    #  docker_image:
+    #    name: python
+    #    source: pull
+    - name: delete container for new one
+      shell: |
+        docker container rm pythonansible -f
+
+    - name: run container as target hosts
+      shell: |
+        docker run -i --name pythonansible python
+        docker start pythonansible
+        #docker exec -i pythonansible bash -c "mkdir /root/.config/ && mkdir /root/.extension/"
+
+    - name: copy dotfiles to target hosts
+      shell: |
+        docker cp "{{ item }}" pythonansible:/root/
+      loop: "{{ filepath['src_path'] }}"
+      vars:
+        filepath:
+          src_path:
+            - /root/.config
+            - /root/.extension
+          dest_path: /root/
+
+
+
+- hosts: docker
+  
+  gather_facts: false
+
+  tasks:
+
+    - name: update apt
+      shell: |
+        apt update
+
+    - name: install apps from apt package 
+      apt:
+        name:
+          - git
+          - fd-find
+          - zsh
+
+        #- name: ensure dotfiles existed on target hosts
+        #  copy:
+        #    src: "{{ item }}"
+        #    dest: "{{ filepath['dest_path'] }}"
+        #    owner: root
+        #    group: root
+        #    mode: "{{ filepath['mode'] }}"
+        #    backup: yes
+        #  loop: "{{ filepath['src_path'] }}"
+        #  vars:
+        #    filepath:
+        #      src_path: 
+        #          - /root/.config/nvim
+        #          - /root/.config
+        #          - /root/.extension
+        #      dest_path: /root/.config/
+        #      mode: "0755"
+
+        #- name: ensure dotfiles existed on target hosts
+        #  copy:
+        #    src: "{{ item }}"
+        #    dest: "{{ filepath['dest_path'] }}"
+        #    owner: root
+        #    group: root
+        #    mode: "{{ filepath['mode'] }}"
+        #    backup: yes
+        #  loop: "{{ filepath['src_path'] }}"
+        #  vars:
+        #    filepath:
+        #      src_path: 
+        #        - /root/.extension/nvim
+        #      dest_path: /root/.extension/
+        #      mode: "0755"
+
+            #- name: install apps from script
+            #  shell: "{{ item }}"
+            #  loop: "{{ filepath['src_path'] }}"
+            #  vars:
+            #    filepath:
+            #      src_path:
+            #        -/root/.extension/nvim/nvim.sh
+            #        -/root/.extension/
+            #        -/root/.extension/
+            #        -/root/.extension/
+            #        -/root/.extension/
+          #- name: ensure required packages
+          #- name: install apps from package
+          #- name: ensure some apps able to run
+          #- name: push docker image
